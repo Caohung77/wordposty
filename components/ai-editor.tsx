@@ -23,7 +23,9 @@ import {
   AlertCircle,
   Copy,
   Settings,
-  PenTool
+  PenTool,
+  X,
+  ExternalLink
 } from "lucide-react"
 import { useWorkflowStore } from "@/lib/workflow-store"
 import { useWordPressStore } from "@/lib/wordpress-store"
@@ -82,6 +84,7 @@ export default function AIEditor({ aiOptions, setAiOptions }: AIEditorProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [isGenerating, setIsGenerating] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
+  const [showAnalysisDetails, setShowAnalysisDetails] = useState(false)
 
   // Update custom prompt in store when changed
   useEffect(() => {
@@ -418,9 +421,20 @@ export default function AIEditor({ aiOptions, setAiOptions }: AIEditorProps) {
 
             {sourceAnalysis && (
               <div className="space-y-3 p-4 bg-green-50 border border-green-200 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span className="font-medium text-green-900">Analysis Complete</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <span className="font-medium text-green-900">Analysis Complete</span>
+                  </div>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    onClick={() => setShowAnalysisDetails(true)}
+                    className="text-xs"
+                  >
+                    <Eye className="h-3 w-3 mr-1" />
+                    View Details
+                  </Button>
                 </div>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
@@ -628,6 +642,113 @@ export default function AIEditor({ aiOptions, setAiOptions }: AIEditorProps) {
           )}
         </CardContent>
       </Card>
+
+      {/* Analysis Details Modal */}
+      {showAnalysisDetails && sourceAnalysis && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b p-4 flex items-center justify-between">
+              <h2 className="text-lg font-semibold flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-green-600" />
+                Analysis Details
+              </h2>
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                onClick={() => setShowAnalysisDetails(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="p-6 space-y-6">
+              {/* Key Insights */}
+              <div className="space-y-3">
+                <h3 className="font-medium text-gray-900 flex items-center gap-2">
+                  Key Insights ({sourceAnalysis.keyInsights?.length || 0})
+                </h3>
+                <div className="space-y-2">
+                  {sourceAnalysis.keyInsights?.map((insight, index) => (
+                    <div key={index} className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <p className="text-sm text-gray-700">• {insight}</p>
+                    </div>
+                  )) || <p className="text-sm text-gray-500">No insights found</p>}
+                </div>
+              </div>
+
+              {/* SEO Keywords */}
+              <div className="space-y-3">
+                <h3 className="font-medium text-gray-900 flex items-center gap-2">
+                  SEO Keywords ({sourceAnalysis.seoKeywords?.length || 0})
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {sourceAnalysis.seoKeywords?.map((keyword, index) => (
+                    <Badge key={index} variant="secondary" className="bg-green-100 text-green-800">
+                      {keyword}
+                    </Badge>
+                  )) || <p className="text-sm text-gray-500">No keywords found</p>}
+                </div>
+              </div>
+
+              {/* Current Trends */}
+              <div className="space-y-3">
+                <h3 className="font-medium text-gray-900 flex items-center gap-2">
+                  Current Trends ({sourceAnalysis.currentTrends?.length || 0})
+                </h3>
+                <div className="space-y-2">
+                  {sourceAnalysis.currentTrends?.map((trend, index) => (
+                    <div key={index} className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                      <p className="text-sm text-gray-700">📈 {trend}</p>
+                    </div>
+                  )) || <p className="text-sm text-gray-500">No trends found</p>}
+                </div>
+              </div>
+
+              {/* Citations */}
+              <div className="space-y-3">
+                <h3 className="font-medium text-gray-900 flex items-center gap-2">
+                  Citations ({sourceAnalysis.citations?.length || 0})
+                </h3>
+                <div className="space-y-2">
+                  {sourceAnalysis.citations?.map((citation, index) => (
+                    <div key={index} className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                      {citation.startsWith('http') ? (
+                        <a 
+                          href={citation} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                          {citation}
+                        </a>
+                      ) : (
+                        <p className="text-sm text-gray-700">{citation}</p>
+                      )}
+                    </div>
+                  )) || <p className="text-sm text-gray-500">No citations found</p>}
+                </div>
+              </div>
+
+              {/* Main Themes (if available) */}
+              {sourceAnalysis.mainThemes && sourceAnalysis.mainThemes.length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="font-medium text-gray-900 flex items-center gap-2">
+                    Main Themes ({sourceAnalysis.mainThemes.length})
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {sourceAnalysis.mainThemes.map((theme, index) => (
+                      <Badge key={index} variant="outline" className="border-orange-300 text-orange-700">
+                        {theme}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

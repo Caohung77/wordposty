@@ -160,11 +160,10 @@ export default function BlogPreview({
       
       <CardContent className="space-y-6">
         <Tabs defaultValue="preview" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="preview">Preview</TabsTrigger>
             <TabsTrigger value="metadata">Metadata</TabsTrigger>
-            <TabsTrigger value="export">Export</TabsTrigger>
-            <TabsTrigger value="wordpress">WordPress</TabsTrigger>
+            <TabsTrigger value="wordpress">Export to WordPress</TabsTrigger>
           </TabsList>
           
           {/* Preview Tab */}
@@ -327,13 +326,8 @@ export default function BlogPreview({
             </div>
           </TabsContent>
 
-          {/* WordPress Tab */}
+          {/* Export to WordPress Tab */}
           <TabsContent value="wordpress" className="space-y-4">
-            <WordPressExport blogGeneration={blogGeneration} />
-          </TabsContent>
-
-          {/* Export Tab */}
-          <TabsContent value="export" className="space-y-4">
             <div className="space-y-4">
               <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <h3 className="font-medium text-blue-900 mb-2">Ready to Export</h3>
@@ -341,11 +335,7 @@ export default function BlogPreview({
                   Your blog post is ready to be exported to WordPress with all metadata and formatting.
                 </p>
                 
-                <div className="flex space-x-2">
-                  <Button onClick={onExport} className="bg-blue-600 hover:bg-blue-700">
-                    <ExternalLink className="h-4 w-4 mr-1" />
-                    Export to WordPress
-                  </Button>
+                <div className="flex space-x-2 mb-4">
                   <Button variant="outline" onClick={onSave}>
                     <Download className="h-4 w-4 mr-1" />
                     Save Draft
@@ -355,30 +345,33 @@ export default function BlogPreview({
                     Copy Content
                   </Button>
                 </div>
-              </div>
 
-              {/* Export Summary */}
-              <div className="space-y-3">
-                <Label className="font-medium">Export Summary</Label>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="p-3 bg-gray-50 rounded">
-                    <p className="font-medium text-gray-700">Content</p>
-                    <p className="text-gray-600">{editableContent.content.split(' ').length} words</p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded">
-                    <p className="font-medium text-gray-700">SEO Score</p>
-                    <p className="text-gray-600">{editableContent.seoScore}/100</p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded">
-                    <p className="font-medium text-gray-700">Tags</p>
-                    <p className="text-gray-600">{editableContent.tags?.length || 0} tags</p>
-                  </div>
-                  <div className="p-3 bg-gray-50 rounded">
-                    <p className="font-medium text-gray-700">Meta Description</p>
-                    <p className="text-gray-600">{editableContent.metaDescription.length} chars</p>
+                {/* Export Summary */}
+                <div className="space-y-3">
+                  <Label className="font-medium">Export Summary</Label>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="p-3 bg-white rounded border">
+                      <p className="font-medium text-gray-700">Content</p>
+                      <p className="text-gray-600">{editableContent.content.split(' ').length} words</p>
+                    </div>
+                    <div className="p-3 bg-white rounded border">
+                      <p className="font-medium text-gray-700">SEO Score</p>
+                      <p className="text-gray-600">{editableContent.seoScore}/100</p>
+                    </div>
+                    <div className="p-3 bg-white rounded border">
+                      <p className="font-medium text-gray-700">Tags</p>
+                      <p className="text-gray-600">{editableContent.tags?.length || 0} tags</p>
+                    </div>
+                    <div className="p-3 bg-white rounded border">
+                      <p className="font-medium text-gray-700">Meta Description</p>
+                      <p className="text-gray-600">{editableContent.metaDescription.length} chars</p>
+                    </div>
                   </div>
                 </div>
               </div>
+              
+              {/* WordPress Export Component */}
+              <WordPressExport blogGeneration={blogGeneration} />
             </div>
           </TabsContent>
         </Tabs>
