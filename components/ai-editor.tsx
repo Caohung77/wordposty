@@ -623,13 +623,6 @@ export default function AIEditor({ aiOptions, setAiOptions }: AIEditorProps) {
                 Preview
               </Button>
             </div>
-            <Button 
-              className="bg-blue-600 hover:bg-blue-700"
-              disabled={!blogGeneration}
-            >
-              <Send className="h-4 w-4 mr-1" />
-              Continue to SEO
-            </Button>
           </div>
           </>
           )}

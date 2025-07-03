@@ -516,14 +516,18 @@ export default function ContentInput() {
 
             <div className="space-y-3">
               <div className="space-y-2">
-                <Label htmlFor="topic">Blog Topic/Title</Label>
-                <Input 
+                <Label htmlFor="topic">What should this blog post be about?</Label>
+                <Textarea 
                   id="topic"
-                  placeholder="What should the blog post be about?"
+                  placeholder="e.g., 'AI content creation tools for beginners' or 'sustainable fashion trends in 2024' or 'remote work productivity challenges for small teams'"
                   value={topic}
                   onChange={(e) => setInputs({ topic: e.target.value })}
                   disabled={isDisabled}
+                  className="min-h-[80px] resize-none"
                 />
+                <p className="text-xs text-gray-500">
+                  The AI will research this topic and create an engaging title and content structure
+                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
