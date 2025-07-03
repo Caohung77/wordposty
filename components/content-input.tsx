@@ -310,9 +310,6 @@ export default function ContentInput() {
     }
   }
 
-  const totalWordCount = sources
-    .filter(source => source.status === 'success')
-    .reduce((sum, source) => sum + (source.wordCount || 0), 0)
 
   const isDisabled = workflowStatus === 'analyzing' || workflowStatus === 'generating'
 
@@ -324,40 +321,6 @@ export default function ContentInput() {
           <CardDescription>
             Add your source content, URLs, and files for AI analysis
           </CardDescription>
-          {sources.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {totalWordCount > 0 && (
-                <Badge variant="secondary" className="w-fit">
-                  {totalWordCount} words total
-                </Badge>
-              )}
-              {sources.filter(s => s.type === 'text' && s.status === 'success').length > 0 && (
-                <Badge variant="outline" className="w-fit">
-                  {sources.filter(s => s.type === 'text' && s.status === 'success').length} text sources
-                </Badge>
-              )}
-              {sources.filter(s => s.type === 'url' && s.status === 'success').length > 0 && (
-                <Badge variant="outline" className="w-fit">
-                  {sources.filter(s => s.type === 'url' && s.status === 'success').length} URL sources
-                </Badge>
-              )}
-              {sources.filter(s => s.type === 'file' && s.status === 'success').length > 0 && (
-                <Badge variant="outline" className="w-fit">
-                  {sources.filter(s => s.type === 'file' && s.status === 'success').length} PDF sources
-                </Badge>
-              )}
-              {sources.filter(s => s.status === 'processing').length > 0 && (
-                <Badge variant="secondary" className="w-fit">
-                  {sources.filter(s => s.status === 'processing').length} processing
-                </Badge>
-              )}
-              {sources.filter(s => s.status === 'error').length > 0 && (
-                <Badge variant="secondary" className="w-fit bg-red-100 text-red-800">
-                  {sources.filter(s => s.status === 'error').length} failed
-                </Badge>
-              )}
-            </div>
-          )}
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Raw Content Input */}

@@ -139,26 +139,6 @@ export default function Home() {
         </main>
       </Tabs>
 
-      {/* Quick Stats Footer */}
-      <footer className="bg-white border-t border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between text-sm text-gray-600">
-          <div className="flex items-center space-x-6">
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span>3 Published</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-              <span>2 Drafts</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span>1 Scheduled</span>
-            </div>
-          </div>
-          <div className="text-xs">Last sync: 2 minutes ago</div>
-        </div>
-      </footer>
     </div>
   )
 }

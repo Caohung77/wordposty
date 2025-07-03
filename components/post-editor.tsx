@@ -3,7 +3,6 @@
 import { useState } from "react"
 import ContentInput from "@/components/content-input"
 import AIEditor from "@/components/ai-editor"
-import SEOPanel from "@/components/seo-panel"
 import WorkflowStatus from "@/components/workflow-status"
 
 export default function PostEditor() {
@@ -34,20 +33,15 @@ export default function PostEditor() {
       {/* Workflow Status - Full Width */}
       <WorkflowStatus />
       
-      <div className="grid grid-cols-12 gap-6 h-[calc(100vh-300px)]">
+      <div className="grid grid-cols-9 gap-6 h-[calc(100vh-300px)]">
         {/* Left Panel - Content Input */}
         <div className="col-span-3">
           <ContentInput />
         </div>
 
-        {/* Center Panel - AI Editor */}
+        {/* Center Panel - AI Editor (Expanded) */}
         <div className="col-span-6">
           <AIEditor aiOptions={aiOptions} setAiOptions={setAiOptions} />
-        </div>
-
-        {/* Right Panel - SEO & Publishing */}
-        <div className="col-span-3">
-          <SEOPanel />
         </div>
       </div>
     </div>
