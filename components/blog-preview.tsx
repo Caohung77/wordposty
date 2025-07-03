@@ -46,6 +46,7 @@ export default function BlogPreview({
 }: BlogPreviewProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [previewMode, setPreviewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop')
+  const [generatedFeaturedImage, setGeneratedFeaturedImage] = useState<string | null>(null)
   const [editableContent, setEditableContent] = useState(blogGeneration || {
     title: '',
     content: '',
@@ -339,6 +340,7 @@ export default function BlogPreview({
             <FeaturedImage 
               blogGeneration={blogGeneration} 
               sourceAnalysis={sourceAnalysis || undefined}
+              onImageGenerated={(imageUrl) => setGeneratedFeaturedImage(imageUrl)}
             />
           </TabsContent>
 
@@ -387,7 +389,10 @@ export default function BlogPreview({
               </div>
               
               {/* WordPress Export Component */}
-              <WordPressExport blogGeneration={blogGeneration} />
+              <WordPressExport 
+                blogGeneration={blogGeneration} 
+                generatedFeaturedImage={generatedFeaturedImage}
+              />
             </div>
           </TabsContent>
         </Tabs>

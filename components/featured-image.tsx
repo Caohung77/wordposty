@@ -27,9 +27,10 @@ import { SourceAnalysis } from "@/lib/perplexity"
 interface FeaturedImageProps {
   blogGeneration: BlogGeneration;
   sourceAnalysis?: SourceAnalysis;
+  onImageGenerated?: (imageUrl: string) => void;
 }
 
-export default function FeaturedImage({ blogGeneration, sourceAnalysis }: FeaturedImageProps) {
+export default function FeaturedImage({ blogGeneration, sourceAnalysis, onImageGenerated }: FeaturedImageProps) {
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -92,6 +93,11 @@ export default function FeaturedImage({ blogGeneration, sourceAnalysis }: Featur
         console.log('Image URL starts with:', data.image.imageUrl.substring(0, 30))
         setGeneratedImage(data.image.imageUrl)
         setLastUsedPrompt(data.image.prompt)
+        
+        // Notify parent component about the generated image
+        if (onImageGenerated) {
+          onImageGenerated(data.image.imageUrl)
+        }
       } else {
         throw new Error('Invalid response from image generation API')
       }

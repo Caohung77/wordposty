@@ -378,10 +378,15 @@ class WordPressService {
   // Upload featured image
   private async uploadFeaturedImage(imageUrl: string, postTitle: string): Promise<number> {
     try {
-      // Download image
+      // For base64 images, we don't need to download, just decode
+      if (imageUrl.startsWith('data:image/')) {
+        return await this.uploadBase64Image(imageUrl, postTitle);
+      }
+
+      // Download image from URL
       const imageResponse = await axios.get(imageUrl, {
         responseType: 'arraybuffer',
-        timeout: 15000
+        timeout: 60000 // Increased timeout to 60 seconds
       });
 
       const imageBuffer = Buffer.from(imageResponse.data);
@@ -400,12 +405,52 @@ class WordPressService {
         headers: {
           'Content-Type': contentType || 'image/jpeg',
           'Content-Disposition': `attachment; filename="${filename}"`
-        }
+        },
+        timeout: 90000 // Increased timeout for upload
       });
 
       return uploadResponse.data.id;
     } catch (error) {
       throw new Error(`Image upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  // Upload base64 image directly
+  private async uploadBase64Image(base64Url: string, postTitle: string): Promise<number> {
+    try {
+      // Extract base64 data and mime type
+      const matches = base64Url.match(/^data:image\/([^;]+);base64,(.+)$/);
+      if (!matches) {
+        throw new Error('Invalid base64 image format');
+      }
+
+      const [, mimeType, base64Data] = matches;
+      const imageBuffer = Buffer.from(base64Data, 'base64');
+
+      // Determine file extension
+      let extension = 'jpg';
+      if (mimeType === 'png') extension = 'png';
+      if (mimeType === 'gif') extension = 'gif';
+      if (mimeType === 'webp') extension = 'webp';
+
+      const filename = `${postTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-featured.${extension}`;
+
+      console.log(`Uploading base64 image: ${filename}, size: ${(imageBuffer.length / 1024 / 1024).toFixed(2)}MB`);
+
+      // Upload to WordPress with extended timeout
+      const uploadResponse = await this.client.post('media', imageBuffer, {
+        headers: {
+          'Content-Type': `image/${mimeType}`,
+          'Content-Disposition': `attachment; filename="${filename}"`
+        },
+        timeout: 120000 // 2 minutes timeout for large base64 images
+      });
+
+      console.log(`Base64 image uploaded successfully: ID ${uploadResponse.data.id}`);
+      return uploadResponse.data.id;
+    } catch (error) {
+      console.error('Base64 image upload error:', error);
+      throw new Error(`Base64 image upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 

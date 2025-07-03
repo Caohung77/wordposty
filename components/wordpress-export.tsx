@@ -33,9 +33,10 @@ import { PublishOptions } from "@/lib/wordpress"
 
 interface WordPressExportProps {
   blogGeneration: BlogGeneration | null;
+  generatedFeaturedImage?: string | null;
 }
 
-export default function WordPressExport({ blogGeneration }: WordPressExportProps) {
+export default function WordPressExport({ blogGeneration, generatedFeaturedImage }: WordPressExportProps) {
   const {
     defaultSite,
     customSite,
@@ -72,6 +73,13 @@ export default function WordPressExport({ blogGeneration }: WordPressExportProps
   useEffect(() => {
     loadDefaultSite()
   }, [])
+
+  // Auto-populate featured image URL when generated image is available
+  useEffect(() => {
+    if (generatedFeaturedImage && !featuredImageUrl) {
+      setFeaturedImageUrl(generatedFeaturedImage)
+    }
+  }, [generatedFeaturedImage, featuredImageUrl])
 
   const loadDefaultSite = async () => {
     try {
@@ -416,9 +424,16 @@ export default function WordPressExport({ blogGeneration }: WordPressExportProps
                   value={featuredImageUrl}
                   onChange={(e) => setFeaturedImageUrl(e.target.value)}
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  Image will be downloaded and uploaded to WordPress
-                </p>
+                <div className="flex items-center justify-between mt-1">
+                  <p className="text-xs text-gray-500">
+                    Image will be downloaded and uploaded to WordPress
+                  </p>
+                  {generatedFeaturedImage && featuredImageUrl === generatedFeaturedImage && (
+                    <Badge variant="secondary" className="text-xs bg-purple-100 text-purple-800">
+                      AI Generated
+                    </Badge>
+                  )}
+                </div>
               </div>
 
               <div className="p-3 bg-gray-50 rounded border">
