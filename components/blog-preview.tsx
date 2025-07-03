@@ -19,13 +19,19 @@ import {
   Monitor,
   Smartphone,
   Tablet,
-  Globe
+  Globe,
+  ImageIcon,
+  Sparkles,
+  Wand2
 } from "lucide-react"
 import { BlogGeneration } from "@/lib/claude"
+import { SourceAnalysis } from "@/lib/perplexity"
 import WordPressExport from "@/components/wordpress-export"
+import FeaturedImage from "@/components/featured-image"
 
 interface BlogPreviewProps {
   blogGeneration: BlogGeneration | null;
+  sourceAnalysis?: SourceAnalysis | null;
   onEdit?: (field: keyof BlogGeneration, value: string) => void;
   onSave?: () => void;
   onExport?: () => void;
@@ -33,6 +39,7 @@ interface BlogPreviewProps {
 
 export default function BlogPreview({ 
   blogGeneration, 
+  sourceAnalysis,
   onEdit, 
   onSave, 
   onExport 
@@ -160,9 +167,10 @@ export default function BlogPreview({
       
       <CardContent className="space-y-6">
         <Tabs defaultValue="preview" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="preview">Preview</TabsTrigger>
             <TabsTrigger value="metadata">Metadata</TabsTrigger>
+            <TabsTrigger value="featured-image">Featured Image</TabsTrigger>
             <TabsTrigger value="wordpress">Export to WordPress</TabsTrigger>
           </TabsList>
           
@@ -324,6 +332,14 @@ export default function BlogPreview({
                 )}
               </div>
             </div>
+          </TabsContent>
+
+          {/* Featured Image Tab */}
+          <TabsContent value="featured-image" className="space-y-4">
+            <FeaturedImage 
+              blogGeneration={blogGeneration} 
+              sourceAnalysis={sourceAnalysis || undefined}
+            />
           </TabsContent>
 
           {/* Export to WordPress Tab */}

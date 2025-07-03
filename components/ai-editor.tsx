@@ -343,6 +343,7 @@ export default function AIEditor({ aiOptions, setAiOptions }: AIEditorProps) {
           {showPreview && blogGeneration ? (
             <BlogPreview
               blogGeneration={blogGeneration}
+              sourceAnalysis={sourceAnalysis}
               onEdit={(field, value) => {
                 // Handle editing blog content
                 console.log('Edit request:', field, value)
