@@ -1,14 +1,15 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { PlusCircle, FileText, BarChart3, Settings, Zap, Clock, CheckCircle, AlertCircle } from "lucide-react"
+import { PlusCircle, FileText, BarChart3, Settings, Zap, Clock, CheckCircle, AlertCircle, TrendingUp } from "lucide-react"
 import PostEditor from "@/components/post-editor"
 import Dashboard from "@/components/dashboard"
 import Templates from "@/components/templates"
 import Analytics from "@/components/analytics"
+import SEOCreator from "@/components/seo-creator"
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("editor")
@@ -41,6 +42,19 @@ export default function Home() {
       category: "Strategy",
     },
   ])
+
+  // Listen for tab change events from SEO Creator
+  useEffect(() => {
+    const handleTabChange = (event: any) => {
+      setActiveTab(event.detail)
+    }
+
+    window.addEventListener('change-tab', handleTabChange)
+    
+    return () => {
+      window.removeEventListener('change-tab', handleTabChange)
+    }
+  }, [])
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -98,22 +112,26 @@ export default function Home() {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
         <div className="bg-white border-b border-gray-200">
           <div className="px-6">
-            <TabsList className="grid w-full max-w-md grid-cols-4">
-              <TabsTrigger value="dashboard" className="flex items-center space-x-2">
+            <TabsList className="grid w-full grid-cols-5 h-10">
+              <TabsTrigger value="dashboard" className="flex items-center space-x-1 text-xs px-2">
                 <BarChart3 className="h-4 w-4" />
-                <span>Dashboard</span>
+                <span className="hidden sm:inline">Dashboard</span>
               </TabsTrigger>
-              <TabsTrigger value="editor" className="flex items-center space-x-2">
+              <TabsTrigger value="editor" className="flex items-center space-x-1 text-xs px-2">
                 <PlusCircle className="h-4 w-4" />
-                <span>Create</span>
+                <span className="hidden sm:inline">Create</span>
               </TabsTrigger>
-              <TabsTrigger value="templates" className="flex items-center space-x-2">
+              <TabsTrigger value="create-seo" className="flex items-center space-x-1 text-xs px-2">
+                <TrendingUp className="h-4 w-4" />
+                <span className="hidden sm:inline">SEO Create</span>
+              </TabsTrigger>
+              <TabsTrigger value="templates" className="flex items-center space-x-1 text-xs px-2">
                 <FileText className="h-4 w-4" />
-                <span>Templates</span>
+                <span className="hidden sm:inline">Templates</span>
               </TabsTrigger>
-              <TabsTrigger value="analytics" className="flex items-center space-x-2">
+              <TabsTrigger value="analytics" className="flex items-center space-x-1 text-xs px-2">
                 <BarChart3 className="h-4 w-4" />
-                <span>Analytics</span>
+                <span className="hidden sm:inline">Analytics</span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -127,6 +145,10 @@ export default function Home() {
 
           <TabsContent value="editor" className="mt-0">
             <PostEditor />
+          </TabsContent>
+
+          <TabsContent value="create-seo" className="mt-0">
+            <SEOCreator />
           </TabsContent>
 
           <TabsContent value="templates" className="mt-0">
